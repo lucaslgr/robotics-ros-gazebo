@@ -271,3 +271,16 @@
 - **rospy (Cliente ROS para Python)**
     - É uma biblioteca que permite interagir com o framework do ROS utilizando Python.
     - [http://wiki.ros.org/rospy](http://wiki.ros.org/rospy)
+
+
+<h3>Links úteis:</h3>
+
+- Cursos de ROS: 
+    - http://wiki.ros.org/Courses
+    - https://sir.upc.edu/projects/rostutorials/
+    - https://robocademy.com/2020/04/28/top-free-tutorials-to-learn-ros-robot-operating-system/
+- Livros:
+    - http://wiki.ros.org/Books
+    - https://emanual.robotis.com/docs/en/platform/turtlebot3/learn/#books
+- Artigo:
+    - http://robotics.stanford.edu/~ang/papers/icraoss09-ROS.pdf
