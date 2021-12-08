@@ -284,3 +284,15 @@
     - https://emanual.robotis.com/docs/en/platform/turtlebot3/learn/#books
 - Artigo:
     - http://robotics.stanford.edu/~ang/papers/icraoss09-ROS.pdf
+
+- Turoriais passo-a-passo:
+    - http://wiki.ros.org/ROS/Tutorials
+    - <a href="http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment">Configurando ambiente</a>
+    - <a href="http://wiki.ros.org/ROS/Tutorials/UnderstandingNodes">Entendendo nós</a>
+    - <a href="http://wiki.ros.org/ROS/Tutorials/UnderstandingTopics">Entendendo tópicos</a>
+    - <a href="http://wiki.ros.org/ROS/Tutorials/UnderstandingServicesParams">Entendendo serviços e parâmetros</a>
+    - <a href="http://wiki.ros.org/ROS/Tutorials/UsingRqtconsoleRoslaunch">Usando rqt console e ros launch</a>
+    - <a href="http://wiki.ros.org/ROS/Tutorials/CreatingPackage">Criando um ROS package</a>
+    - <a href="http://wiki.ros.org/ROS/Tutorials/BuildingPackages">Construindo um ROS package</a>
+    - <a href="http://wiki.ros.org/ROS/Tutorials/WritingPublisherSubscriber%28python%29">Escrevendo um simples Publish e Subscriber em Python</a>
+    - <a href="http://wiki.ros.org/ROS/Tutorials/ExaminingPublisherSubscriber">Examinando o simples Publish e Subscriber em Python</a>
