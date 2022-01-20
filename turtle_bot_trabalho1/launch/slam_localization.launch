@@ -3,8 +3,9 @@
 <!-- Start either SLAM or localization for Turtlebot3 -->
 
 <launch>
-    <arg name="slam_mode" default="true" />
-    <arg name="mouse_teleop" default="true" />
+    <arg name="slam_mode" default="false" />
+    <arg name="localization_mode" default="false" />
+    <arg name="mouse_teleop" default="false" />
 
     <!-- SLAM hector arguments -->
     <arg name="scan_topic" default="scan" />
@@ -23,7 +24,7 @@
     </group>
 
     <!-- ... or localization mode -->
-    <group unless="$(arg slam_mode)">
+    <group if="$(arg localization_mode)">
         <node pkg="map_server" type="map_server" name="map_server" args="$(find turtle_bot_trabalho1)/maps/guimaraes_house_world.yaml" />
 
         <node pkg="amcl" type="amcl" name="amcl">

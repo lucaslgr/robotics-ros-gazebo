@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<!-- 
+  Tasks
+  1º - Load the word 
+  2º - Initialize the robot into the world
+  3º - Load the scanned map 
+  4º - Initialize the localization into the map
+  5º - Initialize the autonomous navation tools 
+-->
+
+<launch>
+  <arg name="gazebo_gui" default="false" />
+
+  <!-- 1º and 2º -->
+  <include file="$(find turtle_bot_trabalho1)/launch/turtlebot_simulator_in_world.launch">
+    <arg name="gazebo_gui" value="$(arg gazebo_gui)" />
+  </include>
+
+  <!-- 3º, 4º and 5º -->
+  <include file="$(find turtle_bot_trabalho1)/launch/navigation.launch"></include>
+
+</launch>
