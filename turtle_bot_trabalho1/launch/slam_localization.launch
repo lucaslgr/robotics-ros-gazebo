@@ -7,7 +7,7 @@
     <arg name="mouse_teleop" default="true" />
 
     <!-- SLAM hector arguments -->
-    <arg name="scan_topic" default="scan"/>
+    <arg name="scan_topic" default="scan" />
 
     <!-- Start in either SLAM ... -->
     <!-- 
@@ -15,19 +15,21 @@
         rosrun map_server map_saver -f `rospack find slide16`/maps/guimaraes_house_world 
     -->
     <!-- Hector mapping -->
-    <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
-        <!-- Advertising config -->
-        <param name="scan_topic" value="$(arg scan_topic)" />
-    </node>
+    <group if="$(arg slam_mode)">
+        <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
+            <!-- Advertising config -->
+            <param name="scan_topic" value="$(arg scan_topic)" />
+        </node>
+    </group>
 
     <!-- ... or localization mode -->
-    <!-- <group unless="$(arg slam_mode)">
-        <node pkg="map_server" type="map_server" name="map_server" args="$(find turtle_bot_trabalho1)/maps/turtlebot3_world.yaml" />
+    <group unless="$(arg slam_mode)">
+        <node pkg="map_server" type="map_server" name="map_server" args="$(find turtle_bot_trabalho1)/maps/guimaraes_house_world.yaml" />
 
         <node pkg="amcl" type="amcl" name="amcl">
-            <param name="transform_tolerance" value="0.2"/>
+            <param name="transform_tolerance" value="0.2" />
         </node>
-    </group> -->
+    </group>
 
     <node if="$(arg mouse_teleop)" pkg="mouse_teleop" type="mouse_teleop.py" name="mouse_teleop">
         <remap from="/mouse_vel" to="/cmd_vel" />
