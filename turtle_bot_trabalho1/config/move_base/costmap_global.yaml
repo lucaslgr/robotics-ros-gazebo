@@ -15,4 +15,4 @@ global_costmap:
 
     inflation_layer:
         inflation_radius: 0.5
-        cost_scaling_factor: 10
+        cost_scaling_factor: 50.0
