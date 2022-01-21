@@ -13,7 +13,7 @@
     <!-- Start in either SLAM ... -->
     <!-- 
         When ready to save the map run this in the command line:
-        rosrun map_server map_saver -f `rospack find slide16`/maps/guimaraes_house_world 
+        rosrun map_server map_saver -f `rospack find turtle_bot_trabalho1`/maps/guimaraes_house_world 
     -->
     <!-- Hector mapping -->
     <group if="$(arg slam_mode)">
