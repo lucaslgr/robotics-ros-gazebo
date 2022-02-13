@@ -20,15 +20,53 @@ from moveit_msgs.srv import ApplyPlanningScene
 from geometry_msgs.msg import Quaternion
 
 ## constantes com os valores de posicao do objeto a ser definido como objetivo do pick and place
-OBJECT_POSE_X = 0.5
-OBJECT_POSE_Y = -0.1 # foram consideradas tres posicoes para testes: 0.15, 0 e -0.1
-OBJECT_POSE_Z = 0.5
+# posicao central: x = 0.5, y = 0, z = 0.5
+# range de posicoes possiveis na coordenada X: 0.47 ~ 0.65
+# range de posicoes possiveis na coordenada Y: 0.15 ~ -0.14
+# coordenada Z = 0.5 (fixo)
+
+# classe que define um objeto posicao
+class Position:
+  def __init__(self, x, y, z):
+    self.x = x
+    self.y = y
+    self.z = z
+
+# constroi um vetor de posicoes
+target_object_positions = []
+CURRENT_POSITION_INDEX = 2
+
+# carrega todas posicoes a serem testadas dentro do vetor
+def load_all_positions():
+  target_object_positions.append(Position(0.5, 0, 0.5))
+  target_object_positions.append(Position(0.45, 0, 0.5))
+  target_object_positions.append(Position(0.48, -0.14, 0.5))
+  
+  target_object_positions.append(Position(0.47, 0.14, 0.5))
+  target_object_positions.append(Position(0.47, -0.14, 0.5))
+  target_object_positions.append(Position(0.48, 0.16, 0.5))
+  target_object_positions.append(Position(0.48, 0.16, 0.5))
+  target_object_positions.append(Position(0.48, 0.16, 0.5))
+  target_object_positions.append(Position(0.48, 0.16, 0.5))
+  target_object_positions.append(Position(0.48, 0.16, 0.5))
+  target_object_positions.append(Position(0.48, 0.16, 0.5))
+  target_object_positions.append(Position(0.48, 0.16, 0.5))
+  target_object_positions.append(Position(0.48, 0.16, 0.5))
+  target_object_positions.append(Position(0.48, 0.16, 0.5))
+  target_object_positions.append(Position(0.48, 0.16, 0.5))
+  target_object_positions.append(Position(0.48, 0.16, 0.5))
+  target_object_positions.append(Position(0.48, 0.16, 0.5))
+  target_object_positions.append(Position(0.48, 0.16, 0.5))
+
+  target_object_positions.append(Position(0.65, 0.15, 0.5))
+  target_object_positions.append(Position(0.65, -0.15, 0.5))
+
 
 # constante com o nome do objeto que sera manipulado
 OBJECT_TARGET_NAME = "object_target"
 
 # metodo que e responsavel por abrir a garra (abre o dedo1 e o dedo2)
-def openGripper(posture):
+def open_gripper(posture):
     """
     - Abrir a garra -
     Parametros: Posicao da Garra
@@ -48,7 +86,7 @@ def openGripper(posture):
     posture.points[0].time_from_start = rospy.Duration(0.5)
 
 # metodo responsavel por fechar a garra (fecha o dedo1 e o dedo2)
-def closeGripper(posture):
+def close_gripper(posture):
     """
     - Fechar a garra -
     Parametros: Posicao da Garra
@@ -91,9 +129,9 @@ def pick(move_group):
     grasps[0].grasp_pose.pose.orientation.z = orientation[2]
     grasps[0].grasp_pose.pose.orientation.w = orientation[3]
     
-    grasps[0].grasp_pose.pose.position.x = OBJECT_POSE_X - 0.085
-    grasps[0].grasp_pose.pose.position.y = OBJECT_POSE_Y
-    grasps[0].grasp_pose.pose.position.z = OBJECT_POSE_Z
+    grasps[0].grasp_pose.pose.position.x = target_object_positions[CURRENT_POSITION_INDEX].x - 0.085
+    grasps[0].grasp_pose.pose.position.y = target_object_positions[CURRENT_POSITION_INDEX].y
+    grasps[0].grasp_pose.pose.position.z = target_object_positions[CURRENT_POSITION_INDEX].z
 
     ## Setando a aplicacao de pre pegada
     # definindo com relação ao frame_id
@@ -112,10 +150,10 @@ def pick(move_group):
     grasps[0].post_grasp_retreat.desired_distance = 0.25
 
     ## Setando a postura do efetor final antes da pegada
-    openGripper(grasps[0].pre_grasp_posture)
+    open_gripper(grasps[0].pre_grasp_posture)
 
     ## Setando a postura do efetor final durante a pegada
-    closeGripper(grasps[0].grasp_posture)
+    close_gripper(grasps[0].grasp_posture)
 
     ## Setando a superfície de suporte como table1
     move_group.set_support_surface_name("table1")
@@ -169,7 +207,7 @@ def place(group):
     place_location[0].post_place_retreat.desired_distance = 0.25
 
     ## Setando a postura do efetor final apos colocar o objeto
-    openGripper(place_location[0].post_place_posture)
+    open_gripper(place_location[0].post_place_posture)
  
     ## Estabelece suporte para a superfície da mesa 2, i.e, a mesa que será colocada o objeto manipulado
     group.set_support_surface_name("table2")
@@ -178,7 +216,7 @@ def place(group):
     group.place(OBJECT_TARGET_NAME, place_location[0])
 
 
-def addCollisionObjects(planning_scene_interface):
+def add_collision_objects(planning_scene_interface):
 
     # Aqui será criado os três objetos que estão no cenário. Duas "mesas" e um "paralelepídeo" que será o objeto que se deseja
     # mover
@@ -213,9 +251,9 @@ def addCollisionObjects(planning_scene_interface):
     # define as dimensões dele
     collision_object_sizes[2] = (0.02, 0.02, 0.2)  # Box size
     # define a pose
-    collision_objects[2].pose.position.x = OBJECT_POSE_X
-    collision_objects[2].pose.position.y = OBJECT_POSE_Y
-    collision_objects[2].pose.position.z = OBJECT_POSE_Z
+    collision_objects[2].pose.position.x = target_object_positions[CURRENT_POSITION_INDEX].x
+    collision_objects[2].pose.position.y = target_object_positions[CURRENT_POSITION_INDEX].y
+    collision_objects[2].pose.position.z = target_object_positions[CURRENT_POSITION_INDEX].z
 
     # Adicionando todos os objetos no cenário no Rviz
     for (name, pose, size) in zip(
@@ -228,6 +266,9 @@ if __name__ == "__main__":
 
     # inicializa o no do ROS
     rospy.init_node("pick_and_place_using_panda_arm")
+
+    # carrega o vetor de posicoes possiveis para o objeto alvo que será deslocado
+    load_all_positions()
 
     # inicializa o moveit_commander
     moveit_commander.roscpp_initialize(sys.argv)
@@ -274,7 +315,7 @@ if __name__ == "__main__":
     rospy.sleep(1.0)
 
     # adiciona os objetos de colisao
-    addCollisionObjects(planning_scene_interface)
+    add_collision_objects(planning_scene_interface)
 
     # espera um pouco para carregar os objetos
     rospy.sleep(1.0)
