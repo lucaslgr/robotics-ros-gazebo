@@ -3,6 +3,7 @@
 # importacao das bibliotecas padrão do Python
 import sys
 import math
+import time
 
 # importacao ROS
 import rospy
@@ -34,32 +35,42 @@ class Position:
 
 # constroi um vetor de posicoes
 target_object_positions = []
-CURRENT_POSITION_INDEX = 2
+CURRENT_POSITION_INDEX = 0
 
 # carrega todas posicoes a serem testadas dentro do vetor
 def load_all_positions():
-  target_object_positions.append(Position(0.5, 0, 0.5))
-  target_object_positions.append(Position(0.45, 0, 0.5))
-  target_object_positions.append(Position(0.48, -0.14, 0.5))
-  
-  target_object_positions.append(Position(0.47, 0.14, 0.5))
-  target_object_positions.append(Position(0.47, -0.14, 0.5))
-  target_object_positions.append(Position(0.48, 0.16, 0.5))
-  target_object_positions.append(Position(0.48, 0.16, 0.5))
-  target_object_positions.append(Position(0.48, 0.16, 0.5))
-  target_object_positions.append(Position(0.48, 0.16, 0.5))
-  target_object_positions.append(Position(0.48, 0.16, 0.5))
-  target_object_positions.append(Position(0.48, 0.16, 0.5))
-  target_object_positions.append(Position(0.48, 0.16, 0.5))
-  target_object_positions.append(Position(0.48, 0.16, 0.5))
-  target_object_positions.append(Position(0.48, 0.16, 0.5))
-  target_object_positions.append(Position(0.48, 0.16, 0.5))
-  target_object_positions.append(Position(0.48, 0.16, 0.5))
-  target_object_positions.append(Position(0.48, 0.16, 0.5))
-  target_object_positions.append(Position(0.48, 0.16, 0.5))
-
-  target_object_positions.append(Position(0.65, 0.15, 0.5))
-  target_object_positions.append(Position(0.65, -0.15, 0.5))
+  target_object_positions.append(Position(0.5, 0, 0.5)) #11.669291496276855
+  target_object_positions.append(Position(0.45, 0, 0.5)) #10.466451168060303
+  target_object_positions.append(Position(0.48, -0.14, 0.5)) #16.2263286113739
+  target_object_positions.append(Position(0.47, 0.14, 0.5)) #13.280328750610352
+  target_object_positions.append(Position(0.47, -0.14, 0.5)) #11.447410821914673
+  target_object_positions.append(Position(0.48, 0.16, 0.5)) #13.890687942504883
+  target_object_positions.append(Position(0.48, -0.16, 0.5)) #16.01171636581421
+  target_object_positions.append(Position(0.50, 0.13, 0.5)) #FALHA
+  target_object_positions.append(Position(0.45, 0.13, 0.5)) #FALHA
+  target_object_positions.append(Position(0.48, 0.17, 0.5)) #11.45394492149353
+  target_object_positions.append(Position(0.48, 0.15, 0.5)) #10.12423523523432
+  target_object_positions.append(Position(0.51, 0.16, 0.5)) #FALHA
+  target_object_positions.append(Position(0.50, 0.15, 0.5)) #11.195968389511108
+  target_object_positions.append(Position(0.46, 0.12, 0.5)) #FALHA
+  target_object_positions.append(Position(0.48, 0.12, 0.5)) #8.676451683044434
+  target_object_positions.append(Position(0.50, 0.11, 0.5)) #FALHA
+  target_object_positions.append(Position(0.51, 0.12, 0.5)) #FALHA
+  target_object_positions.append(Position(0.48, 0.13, 0.5)) #10.576608180999756
+  target_object_positions.append(Position(0.59, 0.13, 0.5)) #12.647433042526245
+  target_object_positions.append(Position(0.59, 0.15, 0.5)) #11.828290939331055
+  target_object_positions.append(Position(0.59, 0.12, 0.5)) #FALHA
+  target_object_positions.append(Position(0.58, 0.15, 0.5)) #13.841835975646973
+  target_object_positions.append(Position(0.58, 0.14, 0.5)) #FALHA
+  target_object_positions.append(Position(0.58, 0.16, 0.5)) #13.096974849700928
+  target_object_positions.append(Position(0.58, 0.13, 0.5)) #11.303464412689209
+  target_object_positions.append(Position(0.58, -0.14, 0.5)) #FALHA
+  target_object_positions.append(Position(0.59, 0.17, 0.5)) #10.808913469314575
+  target_object_positions.append(Position(0.46, 0.17, 0.5)) #FALHA
+  target_object_positions.append(Position(0.46, 0.13, 0.5)) #FALHA
+  target_object_positions.append(Position(0.47, 0.11, 0.5)) #13.088848114013672
+  target_object_positions.append(Position(0.47, 0.15, 0.5)) #FALHA
+  target_object_positions.append(Position(0.45, 0.16, 0.5)) #FALHA
 
 
 # constante com o nome do objeto que sera manipulado
@@ -320,11 +331,24 @@ if __name__ == "__main__":
     # espera um pouco para carregar os objetos
     rospy.sleep(1.0)
 
-    #  pega o objeto ja pre definido passando como argumento o move_group do panda_arm
+    #iniciando a contagem de tempo
+    start_time = time.time()
+
+    # pega o objeto ja pre definido passando como argumento o move_group do panda_arm
     pick(move_group)
 
-    # espera um pouco
-    rospy.sleep(1.0)
+    # espera 1seg
+    delay = 1.0
+    rospy.sleep(delay)
 
     # coloca o objeto 
     place(move_group)
+
+    # imprimindo o tempo que levou a execucao menos o delay forçado de 1 segundo
+    print("position %s: x=%s, y=%s, z=%s | --- %s seconds ---" % (
+      CURRENT_POSITION_INDEX,
+      target_object_positions[CURRENT_POSITION_INDEX].x,
+      target_object_positions[CURRENT_POSITION_INDEX].y,
+      target_object_positions[CURRENT_POSITION_INDEX].z,
+      time.time() - start_time - delay)
+    )
