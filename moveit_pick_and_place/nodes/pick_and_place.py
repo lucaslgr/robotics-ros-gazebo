@@ -19,6 +19,13 @@ from moveit_msgs.msg import CollisionObject, DisplayTrajectory, Grasp, PlaceLoca
 from moveit_msgs.srv import ApplyPlanningScene
 from geometry_msgs.msg import Quaternion
 
+## constantes com os valores de posicao do objeto a ser definido como objetivo do pick and place
+OBJECT_POSE_X = 0.5
+OBJECT_POSE_Y = -0.1 # foram consideradas tres posicoes para testes: 0.15, 0 e -0.1
+OBJECT_POSE_Z = 0.5
+
+# constante com o nome do objeto que sera manipulado
+OBJECT_TARGET_NAME = "object_target"
 
 # metodo que e responsavel por abrir a garra (abre o dedo1 e o dedo2)
 def openGripper(posture):
@@ -75,17 +82,18 @@ def pick(move_group):
 
     ## Setando a posicao da pegada
     # essa e a posicao do panda_link8.
-    # Do panda_link8 até a palma do efetor final a distancia e 0.058, o cubo comeca 0.01 antes 5.0 (metade do comprimento do cubo).
-    # Daí a posicao do panda_link8 = (comprimento do cubo/2 - distancia entre panda_link8 e a palma do efetor final - alguma espaco extra)
+    # do panda_link8 até a palma do efetor final a distancia e 0.058, o cubo comeca 0.01 antes 5.0 (metade do comprimento do cubo).
+    # daí a posicao do panda_link8 = (comprimento do cubo/2 - distancia entre panda_link8 e a palma do efetor final - alguma espaco extra)
     grasps[0].grasp_pose.header.frame_id = "panda_link0"
     orientation = quaternion_from_euler(-math.pi/2, -math.pi/4, -math.pi/2)
     grasps[0].grasp_pose.pose.orientation.x = orientation[0]
     grasps[0].grasp_pose.pose.orientation.y = orientation[1]
     grasps[0].grasp_pose.pose.orientation.z = orientation[2]
     grasps[0].grasp_pose.pose.orientation.w = orientation[3]
-    grasps[0].grasp_pose.pose.position.x = 0.415
-    grasps[0].grasp_pose.pose.position.y = 0
-    grasps[0].grasp_pose.pose.position.z = 0.5
+    
+    grasps[0].grasp_pose.pose.position.x = OBJECT_POSE_X - 0.085
+    grasps[0].grasp_pose.pose.position.y = OBJECT_POSE_Y
+    grasps[0].grasp_pose.pose.position.z = OBJECT_POSE_Z
 
     ## Setando a aplicacao de pre pegada
     # definindo com relação ao frame_id
@@ -113,7 +121,7 @@ def pick(move_group):
     move_group.set_support_surface_name("table1")
 
     ## Chama o metodo pick para pegar o objeto usando as pegadas fornecidas como parametro
-    move_group.pick("object", grasps)
+    move_group.pick(OBJECT_TARGET_NAME, grasps)
 
 def place(group):
     """
@@ -167,7 +175,7 @@ def place(group):
     group.set_support_surface_name("table2")
 
     ## Chama o place para colocar o objeto com a localização dada
-    group.place("object", place_location[0])
+    group.place(OBJECT_TARGET_NAME, place_location[0])
 
 
 def addCollisionObjects(planning_scene_interface):
@@ -178,44 +186,36 @@ def addCollisionObjects(planning_scene_interface):
     collision_object_sizes = [str for i in range(3)]
     collision_objects = [PoseStamped() for i in range(3)]
 
-   # Adiciona a primeira mesa
+    ## Esse trecho de codigo e responsavel por setar nome, frame_id, tamanho e posicao de um objeto no cenário
+    # adiciona a primeira mesa
     collision_objects_names[0] = "table1"
     collision_objects[0].header.frame_id = "panda_link0"
-
-   # Define as dimensões da primeira mesa
+    # define as dimensões da primeira mesa
     collision_object_sizes[0] = (0.2, 0.4, 0.4)  
-
-    # Define a pose da mesa
+    # define a pose da mesa
     collision_objects[0].pose.position.x = 0.5
     collision_objects[0].pose.position.y = 0
     collision_objects[0].pose.position.z = 0.2
 
-   ##########################################################
-   # Aqui será repetido o processo acima para inserir no cenário a segunda mesa
+    ##########################################################
+    # aqui será repetido o processo acima para inserir no cenário a segunda mesa
     collision_objects_names[1] = "table2"
     collision_objects[1].header.frame_id = "panda_link0"
-
-    
-    collision_object_sizes[1] = (0.4, 0.2, 0.4) 
-
-   
+    collision_object_sizes[1] = (0.4, 0.2, 0.4)   
     collision_objects[1].pose.position.x = 0
     collision_objects[1].pose.position.y = 0.5
     collision_objects[1].pose.position.z = 0.2
     ##########################################################
 
-
-   # Aqui adiciona o objeto que vai ser manipulado pelo braço
-    collision_objects_names[2] = "object"
+    ## Inserindo o objeto que vai ser manipulado pelo braço no cenário
+    collision_objects_names[2] = OBJECT_TARGET_NAME
     collision_objects[2].header.frame_id = "panda_link0"
-
-    # Define as dimensões dele
+    # define as dimensões dele
     collision_object_sizes[2] = (0.02, 0.02, 0.2)  # Box size
-
-    #Define a pose
-    collision_objects[2].pose.position.x = 0.5
-    collision_objects[2].pose.position.y = 0
-    collision_objects[2].pose.position.z = 0.5
+    # define a pose
+    collision_objects[2].pose.position.x = OBJECT_POSE_X
+    collision_objects[2].pose.position.y = OBJECT_POSE_Y
+    collision_objects[2].pose.position.z = OBJECT_POSE_Z
 
     # Adicionando todos os objetos no cenário no Rviz
     for (name, pose, size) in zip(
